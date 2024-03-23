@@ -59,7 +59,7 @@ const Navbar = () => {
             <FaTimes className="text-2xl" />
           </Button>
 
-          <Button className="px-3 py-3 rounded-lg bg-gradient-to-r from-[#fe7d46] to-[#faad89]">Connect Wallet</Button>
+          <Button className="cursor-pointer px-3 py-3 rounded-lg bg-gradient-to-r from-[#fe7d46] to-[#faad89]">Connect Wallet</Button>
           
 
           
