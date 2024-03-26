@@ -59,11 +59,11 @@ const Navbar = () => {
             <FaTimes className="text-2xl" />
           </Button>
 
-          <Button className="cursor-pointer px-3 py-3 rounded-lg bg-gradient-to-r from-[#fe7d46] to-[#faad89]">Connect Wallet</Button>
+          <Button className="cursor-pointer text-white px-3 py-3 rounded-lg bg-gradient-to-r from-[#fe7d46] to-[#faad89]">Connect Wallet</Button>
           
 
           
-          <div className="grid pt-6 gap-2 text-center">
+          <div className="grid pt-6 gap-2 text-white text-center">
 
           <Link href="/">
             <button variant="secondary">Home</button>
