@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useRef } from "react";
 import CardProps from "@/elements/cardDesign";
-import NftTag from "../components/nftTag";
+import NftTag from "@/components/NftTag";
 import { motion, useInView } from "framer-motion";
 
 

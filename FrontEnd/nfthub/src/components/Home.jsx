@@ -41,10 +41,14 @@ const HomeComponet = () => {
             </p>
 
             <div className="flex gap-4 py-8">
-              <Button className="cursor-pointer px-3 py-3 rounded-lg bg-gradient-to-r from-[#fe7d46] to-[#faad89]">
+              <Button style={{
+              boxShadow: "0px 1px 10px #999",
+            }} className="cursor-pointer px-3 py-3 rounded-lg bg-gradient-to-r from-[#fe7d46] to-[#faad89]">
                 Start Creating
               </Button>
-              <Button className="border-4 cursor-pointer px-3 text-black py-3 rounded-lg border-[#faad89]">
+              <Button style={{
+              boxShadow: "0px 1px 10px #999",
+            }} className="border-4 cursor-pointer px-3 text-black py-3 rounded-lg border-[#faad89]">
                 Explore Now
               </Button>
             </div>
