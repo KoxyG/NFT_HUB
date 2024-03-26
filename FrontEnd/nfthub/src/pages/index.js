@@ -11,14 +11,14 @@ const inter = Open_Sans({ subsets: ["latin"] });
 export default function Home() {
   return (
     <main style={inter} className="">
-      <div className="mx-[50px] bg-black">
+
         <Navbar />
 
         < HomeComponet />
         
         <Explore />
         <AboutUs />
-      </div>
+   
       <Footer />
     </main>
   );

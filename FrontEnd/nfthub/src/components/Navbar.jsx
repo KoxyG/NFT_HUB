@@ -16,7 +16,7 @@ const Navbar = () => {
       className="bg-black
          to-slate-950 sticky top-0 z-40"
     >
-      <nav className="container mx-auto flex items-center justify-between py-4 ">
+      <nav className="px-[50px] container mx-auto flex items-center justify-between py-4 ">
         <div className="flex items-center cursor-pointer">
 
           <Image width={140} height={140} className="" src="/Images/logo.png" alt="logo" />
