@@ -13,7 +13,7 @@ const Navbar = () => {
 
   return (
     <header
-      className="bg-dark
+      className="bg-black
          to-slate-950 sticky top-0 z-40"
     >
       <nav className="container mx-auto flex items-center justify-between py-4 ">
@@ -25,22 +25,22 @@ const Navbar = () => {
 
         <div className="hidden md:flex justify-between gap-6">
           <Link href="/">
-            <Button variant="secondary">Home</Button>
+            <button variant="secondary">Home</button>
           </Link>
-          <Link href="/explore">
-            <Button variant="secondary">Explore</Button>
+          <Link href="/Explore">
+            <button variant="secondary">Explore</button>
           </Link>
-          <Link href="/about">
-            <Button variant="secondary">About us</Button>
+          <Link href="/AboutUs">
+            <button variant="secondary">About us</button>
           </Link>
-          <Link href="/create">
-            <Button variant="secondary">Create</Button>
+          <Link href="/Create">
+            <button variant="secondary">Create</button>
           </Link>
           
         </div>
 
         <div className="hidden md:flex items-center md:pb-4">
-          <Button className="px-3 py-3 rounded-lg bg-gradient-to-r from-[#fe7d46] to-[#faad89]">Connect Wallet</Button>
+          <button className="px-3 py-3 rounded-lg bg-gradient-to-r from-[#fe7d46] to-[#faad89]">Connect Wallet</button>
         </div>
 
         <div className="md:hidden">
@@ -52,7 +52,7 @@ const Navbar = () => {
 
       {isOpen && (
         <div
-          className="fixed top-0  right-0 bottom-0 left-0 bg-dark
+          className="bg-black fixed top-0  right-0 bottom-0 left-0 bg-dark
          flex flex-col items-center justify-center"
         >
           <Button className="text-white absolute top-4 right-4" onClick={toggleMenu}>
@@ -68,13 +68,13 @@ const Navbar = () => {
           <Link href="/">
             <button variant="secondary">Home</button>
           </Link>
-          <Link href="/explore">
+          <Link href="/Explore">
             <button variant="secondary">Explore</button>
           </Link>
-          <Link href="/about">
+          <Link href="/AboutUs">
             <button variant="secondary">About us</button>
           </Link>
-          <Link href="/create">
+          <Link href="/Create">
             <button variant="secondary">Create</button>
           </Link>
 

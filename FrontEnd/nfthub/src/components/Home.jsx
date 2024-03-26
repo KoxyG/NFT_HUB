@@ -28,7 +28,7 @@ const HomeComponet = () => {
          
   return (
     <>
-      <div className="container mx-auto  space-y-10 sm:space-y-0 sm:flex sm:justify-between">
+      <div className="container mx-auto pb-10  space-y-10 sm:space-y-0 sm:flex sm:justify-between">
         <div className="rounded-md sm:flex sm:justify-between sm:w-4/5 bg-[#ffe5da] ">
           <div className=" px-[30px] pt-[60px] ">
             <h2 className="text-black leading-20 font-bold text-4xl">
@@ -54,7 +54,7 @@ const HomeComponet = () => {
           </div>
         </div>
 
-        <div className="sm:w-1/5 sm:pl-5">
+        <div className="sm:pl-5">
         <CardProps
             key={firstNft.id}
             image={firstNft.image}

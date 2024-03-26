@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useRef } from "react";
-import ProjectCard from "./ProjectCard";
-import NftTag from "./nftTag";
+import CardProps from "@/elements/cardDesign";
+import NftTag from "../components/nftTag";
 import { motion, useInView } from "framer-motion";
 
 
@@ -10,7 +10,17 @@ const Nft = [
      {
           id: 1,
           image: "/Images/nft.png", // Example image URL
-          title: "SoundSculptures",
+          title: "1SoundSculptures",
+          tag: ["All", "Arts", "Fashion"],
+          endTime: "04:40:56",
+          currentBid: "0.005 ETH",
+          description: "Description for story 1...",
+        },
+        {
+          id: 1,
+          image: "/Images/nft.png", // Example image URL
+          title: "2SoundSculptures",
+          tag: ["All", "Arts"],
           endTime: "04:40:56",
           currentBid: "0.005 ETH",
           description: "Description for story 1...",
@@ -18,7 +28,8 @@ const Nft = [
         {
           id: 1,
           image: "/Images/Announce.png", // Example image URL
-          title: "SoundSculptures",
+          title: "3SoundSculptures",
+          tag: ["All", "Fashion"],
           endTime: "04:40:56",
           currentBid: "0.005 ETH",
           description: "Description for story 1...",
@@ -34,8 +45,8 @@ const ProjectsSection = () => {
     setTag(newTag);
   };
 
-  const filteredProjects = projectsData.filter((project) =>
-    project.tag.includes(tag)
+  const filteredProjects = Nft.filter((nft) =>
+    nft.tag.includes(tag)
   );
 
   const cardVariants = {
@@ -44,29 +55,27 @@ const ProjectsSection = () => {
   };
 
   return (
-    <section id="projects">
-      <h2 className="text-center text-4xl font-bold text-white mt-4 mb-8 md:mb-12">
-        My Projects
-      </h2>
-      <div className="text-white flex flex-row justify-center items-center gap-2 py-6">
-        < NftTag Tag
+    <section id="projects" className="container mx-auto">
+      <div className="text-white flex flex-row justify-start items-center gap-2 sm:px-[100px] py-6">
+        < NftTag
           onClick={handleTagChange}
           name="All"
           isSelected={tag === "All"}
         />
         < NftTag 
           onClick={handleTagChange}
-          name="Web"
-          isSelected={tag === "Web"}
+          name="Arts"
+          isSelected={tag === "Arts"}
         />
         < NftTag 
           onClick={handleTagChange}
-          name="Blockchain"
-          isSelected={tag === "Mobile"}
+          name="Fashion"
+          isSelected={tag === "Fashion"}
         />
       </div>
+
       <ul ref={ref} className="grid md:grid-cols-3 gap-8 md:gap-12">
-        {filteredProjects.map((project, index) => (
+        {filteredProjects.map((nft, index) => (
           <motion.li
             key={index}
             variants={cardVariants}
@@ -74,7 +83,7 @@ const ProjectsSection = () => {
             animate={isInView ? "animate" : "initial"}
             transition={{ duration: 0.3, delay: index * 0.4 }}
           >
-            {Nft.map((nft) => (
+            
             <CardProps
               key={nft.id}
               image={nft.image}
@@ -83,11 +92,12 @@ const ProjectsSection = () => {
               currentBid={nft.currentBid}
               endTime={nft.endTime}
             />
-          ))}
+         
             
           </motion.li>
         ))}
       </ul>
+
     </section>
   );
 };
