@@ -55,7 +55,7 @@ const ProjectsSection = () => {
   };
 
   return (
-    <section id="projects" className="container mx-auto px-[50px]">
+    <section id="projects" className="container mx-auto px-[50px] bg-black">
       <div className="text-white mx-[50px] bg-black flex flex-row justify-start items-center gap-2 sm:px-[100px] py-6">
         < NftTag
           onClick={handleTagChange}

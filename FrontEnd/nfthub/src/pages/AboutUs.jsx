@@ -2,7 +2,7 @@ import React from "react";
 
 const AboutUs = () => {
   return (
-    <section className="container mx-auto px-[50px]">
+    <section className="container mx-auto px-[50px] bg-black">
       <h2 className="text-white  pt-[100px] text-center py-8 font-bold text-4xl">About us</h2>
       <div className="text-white pb-[100px] gap-8 sm:flex">
         <h3 className="text-2xl font-bold sm:w-4/5">What is NftHub?</h3>
