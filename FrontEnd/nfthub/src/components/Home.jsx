@@ -58,7 +58,7 @@ const HomeComponet = () => {
           </div>
         </div>
 
-        <div className="sm:pl-5">
+        <div className="sm:pl-5 hidden sm:block">
         <CardProps
             key={firstNft.id}
             image={firstNft.image}

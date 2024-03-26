@@ -1,6 +1,8 @@
 
 export default function Details() {
   return (
-    <div>details</div>
+    <div className="bg-black">
+      <div>Details</div>
+    </div>
   );
 }

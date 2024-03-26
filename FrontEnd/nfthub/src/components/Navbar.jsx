@@ -15,7 +15,7 @@ const Navbar = () => {
     <header
       className="bg-black sticky top-0 z-40"
     >
-      <div className="bg-black"></div>
+      <div className="bg-black">
       <nav className="px-[50px] container mx-auto flex items-center justify-between py-4 ">
         <div className="flex items-center cursor-pointer">
 
@@ -83,6 +83,7 @@ const Navbar = () => {
 
         </div>
       )}
+      </div>
     </header>
   );
 };
