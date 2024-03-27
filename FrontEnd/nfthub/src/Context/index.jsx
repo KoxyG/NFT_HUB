@@ -10,9 +10,9 @@ export function NftProvider(props) {
   
   const [tokenID, setTokenID] = useState();
   const [db, setDb] = useState(null);
-  const [modal, setModal] = useState("scale-0");
+  const [modal, setModal] = useState(false);
   const [initDb, setInitDb] = useState(false);
-  const [showModal, setShowModal] = useState("scale-0");
+  const [showModal, setShowModal] = useState(false);
   const [nftDetails, setNFTDetails] = useState(null);
   const [alert, setAlert] = useState({ show: false, msg: "", color: "" });
   const [loading, setLoading] = useState({ msg: '', isLoading: false });
