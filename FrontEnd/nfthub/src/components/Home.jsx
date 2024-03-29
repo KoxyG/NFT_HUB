@@ -66,6 +66,7 @@ const HomeComponet = () => {
             description={firstNft.description}
             currentBid={firstNft.currentBid}
             endTime={firstNft.endTime}
+            href={`/Details/${firstNft.id}`}
           />
 
         </div>

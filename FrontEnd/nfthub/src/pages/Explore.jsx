@@ -91,6 +91,7 @@ const ProjectsSection = () => {
               description={nft.description}
               currentBid={nft.currentBid}
               endTime={nft.endTime}
+              href={`/Details/${nft.id}`}
             />
          
             
