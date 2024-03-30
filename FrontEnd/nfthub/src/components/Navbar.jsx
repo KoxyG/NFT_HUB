@@ -3,9 +3,22 @@ import { FaBars, FaTimes } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "@/elements/button";
+import ConnectModal from "./connectModal";
+import { NftContext } from "@/Context";
+import { useContext } from "react";
 
 const Navbar = () => {
+  const { connectModal, setConnectModal } = useContext(NftContext);
+
   const [isOpen, setIsOpen] = useState(false);
+
+  function openModal() {
+    setConnectModal(true);
+  }
+
+  function closeModal() {
+    setConnectModal(false);
+  }
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -40,7 +53,9 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex items-center md:pb-4">
-          <button className="px-3 py-3 rounded-lg bg-gradient-to-r from-[#fe7d46] to-[#faad89]">Connect Wallet</button>
+          <button onClick={openModal} className="px-3 py-3 rounded-lg bg-gradient-to-r from-[#fe7d46] to-[#faad89]">Connect Wallet</button>
+          {connectModal && <ConnectModal isOpen={connectModal} onClose={closeModal} />}
+          
         </div>
 
         <div className="md:hidden">

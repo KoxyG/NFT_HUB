@@ -10,7 +10,7 @@ export function NftProvider(props) {
   
   const [tokenID, setTokenID] = useState();
   const [db, setDb] = useState(null);
-  const [modal, setModal] = useState(false);
+  const [connectModal, setConnectModal] = useState(false);
   const [initDb, setInitDb] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [nftDetails, setNFTDetails] = useState(null);
@@ -29,11 +29,12 @@ export function NftProvider(props) {
           nft,
           setNft,
           tokenID,
+          connectModal,
           setTokenID,
           bundlrId,
           setBundlrId,
-          modal,
-          setModal,
+         
+          setConnectModal,
           nftDetails,
           setNFTDetails,
           db,

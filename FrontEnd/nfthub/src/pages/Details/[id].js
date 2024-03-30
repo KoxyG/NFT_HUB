@@ -8,7 +8,6 @@ import { useContext } from "react";
 import { NftContext } from "@/Context";
 import Card from "../Card";
 
-import Modal from "@/elements/modal";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
