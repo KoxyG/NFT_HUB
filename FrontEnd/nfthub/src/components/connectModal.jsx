@@ -1,6 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useContext, useEffect, useRef, useCallback } from "react";
-import { connectMetamask, connectCoinbase, connectTrust } from "@/Config/utils";
 import { NftContext } from "@/Context";
 import { ethers } from "ethers";
 import WeaveDB from "weavedb-sdk";

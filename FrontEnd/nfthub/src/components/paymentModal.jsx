@@ -3,6 +3,7 @@ import { Fragment } from 'react';
 import { useContext } from 'react';
 import { NftContext } from '@/context';
 
+
 export default function ConnectModal({isOpen, onClose }) {
 
   const nft = useContext(NftContext);
