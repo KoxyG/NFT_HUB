@@ -13,6 +13,8 @@ export function NftProvider(props) {
   const [showModal, setShowModal] = useState(false);
   const [nftDetails, setNFTDetails] = useState(null);
   const [provider, setProvider] = useState(null);
+  const [signer, setSigner] = useState(null);
+  const [minting, setMinting] = useState(false);
   
   
 
@@ -20,6 +22,8 @@ export function NftProvider(props) {
     <div>
       <NftContext.Provider
         value={{
+          minting,
+          setMinting,
           tokenID,
           connectModal,
           walletConnected,

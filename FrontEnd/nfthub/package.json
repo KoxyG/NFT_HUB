@@ -12,18 +12,20 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^1.7.18",
     "classnames": "^2.5.1",
+    "ethers": "^5.7.2",
     "filereader-stream": "^2.0.0",
     "framer-motion": "^11.0.20",
+    "mime": "^4.0.1",
     "nanoid": "^5.0.6",
     "next": "14.1.4",
+    "nft.storage": "^7.1.1",
     "react": "^18",
     "react-dom": "^18",
     "react-dropzone": "^14.2.3",
     "react-icons": "^5.0.1",
     "react-toastify": "^10.0.5",
-    "ethers": "^5.7.2",
-    "web3modal": "^1.9.12",
-    "weavedb-sdk": "^0.39.2"
+    "weavedb-sdk": "^0.39.2",
+    "web3modal": "^1.9.12"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.1",

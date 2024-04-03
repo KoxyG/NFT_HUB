@@ -8,7 +8,7 @@ import { NftContext } from "@/Context";
 import { useContext } from "react";
 
 const Navbar = () => {
-  const { connectModal, user, setUser, setConnectModal, walletConnected, setWalletConnected } = useContext(NftContext);
+  const { connectModal, user, setAccount, setUser, setConnectModal, walletConnected, setWalletConnected } = useContext(NftContext);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -53,14 +53,15 @@ const Navbar = () => {
             <Link href="/AboutUs">
               <button variant="secondary">About us</button>
             </Link>
-            <Link href="/Create">
+            {/* <Link href="/Create">
               <button variant="secondary">Create</button>
-            </Link>
+            </Link> */}
           </div>
 
           {!walletConnected ? (
               <div className="hidden md:flex items-center md:pb-4">
               <button
+              autoFocus
                 onClick={openModal}
                 className="px-3 py-3 rounded-lg bg-gradient-to-r from-[#fe7d46] to-[#faad89]"
               >
@@ -104,15 +105,16 @@ const Navbar = () => {
               <FaTimes className="text-2xl" />
             </Button>
 
-            <div className="">
+            {/* <div className="top-0 relative z-50">
               <Button
+                autoFocus
                 onClick={openModal}
                 className="cursor-pointer text-white px-3 py-3 rounded-lg bg-gradient-to-r from-[#fe7d46] to-[#faad89]"
               >
                 Connect Wallet
               </Button>
               <ConnectModal isOpen={connectModal} onClose={closeModal} />
-            </div>
+            </div> */}
 
             <div className="grid pt-6 gap-2 text-white text-center">
               <Link href="/">
@@ -124,9 +126,9 @@ const Navbar = () => {
               <Link href="/AboutUs">
                 <button variant="secondary">About us</button>
               </Link>
-              <Link href="/Create">
+              {/* <Link href="/Create">
                 <button variant="secondary">Create</button>
-              </Link>
+              </Link> */}
             </div>
           </div>
         )}

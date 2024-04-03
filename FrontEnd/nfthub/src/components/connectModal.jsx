@@ -1,22 +1,28 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useContext, useEffect, useRef, useCallback } from "react";
 import { NftContext } from "@/Context";
+import { useRouter } from "next/navigation";
 import { ethers } from "ethers";
 import WeaveDB from "weavedb-sdk";
-
 import Image from "next/image";
 
 export default function ConnectModal({ isOpen, onClose }) {
-  const CHAIN_ID = 11155111;
-  const NETWORK_NAME = "Sepolia";
-  const contractTxId = "GIkhO4H7OJ_60Pc8ifkuqpQs9rh7Z-mHw1Ge1oHcPGk";
+  const CHAIN_ID = 421614;
+  const NETWORK_NAME = "ARBSEPOLIA";
+  const contractTxId = "Sl1ParTvpAcwEk2nEfjudCk7QnJE1M7_3B_eMMnDwYI";
 
+
+  // router
+  const router = useRouter()
+
+  //contect
   const {
     walletConnected,
     setWalletConnected,
     account,
     db,
     setDb,
+    setSigner,
     user,
     setUser,
     setAccount,
@@ -24,18 +30,27 @@ export default function ConnectModal({ isOpen, onClose }) {
     setProvider,
   } = useContext(NftContext);
 
+
+
+
+  useEffect(() => {
+    setupWeaveDB();
+  }, []);
+
   const setupWeaveDB = async () => {
     try {
       const _db = new WeaveDB({
         contractTxId: contractTxId,
       });
       const __db = await _db.init();
-      console.log("__db", __db)
+      console.log("__db", __db);
       setDb(_db);
     } catch (e) {
       console.error("setupWeaveDB", e);
     }
   };
+
+  
 
   const connectWallet = async (e, wallet) => {
     e.preventDefault();
@@ -46,23 +61,25 @@ export default function ConnectModal({ isOpen, onClose }) {
           alert("pls install metamask");
           return;
         }
+
         const provider = new ethers.providers.Web3Provider(
           window.ethereum,
           "any"
         );
         await provider.send("eth_requestAccounts", []);
+        const { chainId } = await provider.getNetwork();
 
+        if (chainId !== CHAIN_ID) {
+          alert(`Please switch to the ${NETWORK_NAME} network!`);
+          throw new Error(`Please switch to the ${NETWORK_NAME} network`);
+        }
+        setProvider(provider);
+       
 
-        // Get the chain ID from the connected network
-      const { chainId } = await provider.getNetwork();
-
-      // Check if the chain ID matches your desired network
-      if (chainId !== CHAIN_ID) {
-        alert(`Please switch to the ${NETWORK_NAME} network!`);
-        throw new Error(`Please switch to the ${NETWORK_NAME} network`);
-      }
-
-        console.log("db", db)
+        // const account = await signer.getAddress();
+        // setAccount(account);
+        // console.log("Signer address:", account);
+        console.log("db", db);
         const { identity } = await db.createTempAddress();
 
         setUser({
@@ -70,7 +87,8 @@ export default function ConnectModal({ isOpen, onClose }) {
         });
 
         setWalletConnected(true);
-        onClose(false)
+        onClose(false);
+        router.push("/Create");
       } catch (error) {
         console.error(error);
       }
@@ -81,9 +99,7 @@ export default function ConnectModal({ isOpen, onClose }) {
     }
   };
 
-  useEffect(() => {
-    setupWeaveDB();
-  }, []);
+
 
   return (
     <>
@@ -116,7 +132,6 @@ export default function ConnectModal({ isOpen, onClose }) {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                
                 <div className="bg-[#ffe6da] max-w-lg p-6 rounded-lg shadow-lg">
                   {/* Content of your modal */}
                   <div className="mb-[0px] flex justify-end">
@@ -136,6 +151,7 @@ export default function ConnectModal({ isOpen, onClose }) {
                   </Dialog.Title>
                   <div className="mt-2 space-y-4">
                     <button
+                      autoFocus
                       onClick={(e) => connectWallet(e, "metamask")}
                       className="gap-3 w-[300px] p-2 rounded-md bg-white border border-white flex"
                     >
@@ -175,8 +191,6 @@ export default function ConnectModal({ isOpen, onClose }) {
                     </button>
                   </div>
                 </div>
-
-
               </Transition.Child>
             </div>
           </div>

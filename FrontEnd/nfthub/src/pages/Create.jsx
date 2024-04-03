@@ -1,6 +1,12 @@
 import { useDropzone } from "react-dropzone";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useCallback, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import { NFTStorage, File } from 'nft.storage'
+import { NftContext } from "@/Context";
+import { Contract } from "ethers";
+import { Marketplace_Address, marketplace } from "@/Abi/Marketplace";
+import { Nft_Address, Nft } from "@/Abi/Nft";
+
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -11,21 +17,21 @@ export default function Create(props) {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
-  const [totalShares, setTotalShares] = useState("");
   const [fileUrl, setFileUrl] = useState("");
   const [ImgBase64, setImgBase64] = useState("");
   const [category, setCategory] = useState("");
   const [setBundlrId] = useState("");
   const [loading, setLoading] = useState("");
-  const [deadline, setDeadline] = useState(""); // State to hold the deadline input
-  
 
-//   const { setModal} = useContext(NftContext);
+  const { tokenID, setMinting, provider, account, minting } = useContext(NftContext);
+
+  const NFT_STORAGE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweERENUI5NTU4RDhlNDI3Qzg2MTM2ZUFkNzA1NTljOEE3NTQzNmU5MDgiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTcxMjAwMjg4NjUwMywibmFtZSI6Ik5GVF9IVUIifQ.wiwWJIAoVM1mMzfo06Z7p1Ad2zM4hDlPNziwxAIK1r4'
+
 
   const contractTxId = "U2OR33r74nnR1C3alI-JEpbRqSisAiKIEbXECgaJSyA";
   // const db = new SDK({ contractTxId: contractTxId });
 
-  //function for adding image to input
+
 
   const { getRootProps, getInputProps, open, acceptedFiles } = useDropzone({
     noClick: true,
@@ -57,9 +63,6 @@ export default function Create(props) {
       case "description":
         setDescription(event.target.value);
         break;
-      case "totalShares":
-        setTotalShares(event.target.value);
-        break;
       case "deadline":
         setDeadline(event.target.value);
         break;
@@ -82,7 +85,7 @@ export default function Create(props) {
     </li>
   ));
 
-  //handle changes or category
+  // //handle changes or category
 
   const handleCategoryChange = (event) => {
     setCategory(event.target.value);
@@ -95,69 +98,61 @@ export default function Create(props) {
     setTitle("");
     setPrice("");
     setDescription("");
-    setTotalShares("");
     setFileUrl("");
     setCategory("");
   };
 
-  const handleNft_details = async (tokenID, bundlrUploadUrl) => {
-    const docId = nanoid();
-
-    const nft_details = {
-      title: title,
-      description: description,
-      price: Number(price),
-      uploadUrl: bundlrUploadUrl,
-      tokenID,
-      totalShares: Number(totalShares),
-    };
-
-    // await db.init();
-
+  const getNftContractInstance = useCallback((provider) => {
     try {
-      // const res = await db.add(nft_details, "NFT_COLLECTION");
-      console.log("docId", docId);
-      // console.log(res);
-    } catch (e) {
-      console.error(e);
+      return new Contract(Nft_Address, Nft, provider);
+    } catch (error) {
+      console.error("Error creating vesting contract instance:", error);
     }
-  };
+  }, []);
 
-  const handlrBundlrUpload = async (fileUrl) => {
-    const bundlr = await getBundlr();
-
+  const handlrNftStorageUpload = async (title, description, fileUrl) => {
+    
+    console.log("fileUrl: ", fileUrl)
     try {
-      console.log(fileUrl);
-      const dataStream = fileReaderStream(fileUrl);
-      const Price = await bundlr.getPrice(fileUrl.size);
-      console.log("price:", Price);
-      const balance = await bundlr.getLoadedBalance();
-      console.log("balance:", balance);
-      if (Price.isGreaterThanOrEqualTo(balance)) {
-        console.log("Funding node.");
-
-        await bundlr.fund(Price);
-        console.log("funded");
-      } else {
-        console.log("Funding not needed, balance sufficient.");
-      }
-
-      const fileType = "image/png";
-      const response = await bundlr.upload(dataStream, {
-        tags: [{ name: "Content-Type", value: fileType }],
-      });
-      console.log("bundlr uploaded file:", response.id);
-
-      console.log("Content ID successfully saved to local storage.");
-
-      console.log(
-        `Upload success content URI= https://arweave.net/${response.id}`
-      );
-      return `https://arweave.net/${response.id}`;
+      const client = new NFTStorage({ token: NFT_STORAGE_KEY });
+      const metadata = await client.store({
+        name: title,
+        description: description,
+        image: fileUrl
+      })
+      console.log("metadata: ", metadata)
+      const cid = metadata.ipnft;
+      console.log("cid: ", cid)
     } catch (error) {
       console.log("Error uploading file: ", error);
     }
   };
+
+  const handleMintNft = async (e) => {
+    // e.preventDefault();
+    setMinting(true);
+    try {
+      
+      const signer = provider.getSigner();
+      const account = signer.getAddress()
+      console.log("account", account);
+      console.log("signer: ", signer)
+      const nftContract = getNftContractInstance(signer);
+      console.log("nftContract: ", nftContract)
+      // const tokenId = nanoid();
+      // console.log("tokenId: ", tokenId);
+      const nft = await nftContract.mint(
+        "0x4d262f40a01391eFcb4847A07Ad21f51f03264C3",
+        "1",
+      );
+      await nft.wait();
+      setMinting(false);
+      toast.success("Nft successfully minted!");
+    } catch (error) {
+      console.log(error);
+      toast.error("An error occurred while minting the Nft");
+    }
+  }
 
   
   const handleSubmit = async (event) => {
@@ -165,9 +160,8 @@ export default function Create(props) {
   
     if (
       !title ||
-      !price ||
+      // !price ||
       !description ||
-      !totalShares ||
       !fileUrl
     ) {
       console.log(title);
@@ -180,18 +174,16 @@ export default function Create(props) {
 
       toast.error("Please fill all required fields");
     } else {
-      setModal("scale-100");
-      setLoading({ show: true, msg: "Nft..." });
+      // setModal("scale-100");
+      // setLoading({ show: true, msg: "Nft..." });
 
       try {
-        // Do something with the form data
+      
         setLoading(true);
-        const bundlrUploadUrl = await handlrBundlrUpload(fileUrl);
-        const tokenID  = await  handleCreateListing(price, totalShares)
-        console.log(tokenID)
-        await handleNft_details(tokenID, bundlrUploadUrl)
         
-
+        
+        await handlrNftStorageUpload(title, description, fileUrl)
+        await handleMintNft().
         setLoading(false);
         resetForm();
 
@@ -312,57 +304,7 @@ export default function Create(props) {
                 />
               </div>
 
-              {/* totalShares input */}
-              <div className="pb-6 appearance-none">
-                <label
-                  className="block text-white 
-                  text-sm pb-2
-                  font-semibold leading-snug"
-                  htmlFor="description"
-                >
-                  Nft Total Shares
-                </label>
-                <input
-                  className="
-                border rounded w-full md:w-[600px] py-3 
-                px-3
-                 text-gray-700 leading-tight 
-                 focus:outline-none focus:shadow-outline"
-                  id="totalShares"
-                  type="number"
-                  name="totalShares"
-                  value={totalShares}
-                  onChange={handleChange}
-                  placeholder="input 1 or more"
-                />
-              </div>
-
-              {/* deadline input */}
-              <div className="pb-6 appearance-none">
-                <label
-                  className="block text-white 
-                  text-sm pb-2
-                  font-semibold leading-snug"
-                  htmlFor="description"
-                >
-                  Nft Deadline
-                </label>
-                <input
-                  className="
-                border rounded w-full md:w-[600px] py-3 
-                px-3
-                 text-gray-700 leading-tight 
-                 focus:outline-none focus:shadow-outline"
-                  id="deadline"
-                  type="datetime-local"
-                  value={deadline}
-                  name="deadline"
-                  onChange={handleChange}
-                  placeholder="input 1 or more"
-                />
-                
-              </div>
-
+              
               {/* picture / add nft input */}
               <div
                 {...getRootProps({ className: "dropzone" })}
