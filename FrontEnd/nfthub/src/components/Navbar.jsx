@@ -6,7 +6,7 @@ import Button from "@/elements/button";
 import ConnectModal from "./connectModal";
 import { NftContext } from "@/Context";
 import { useContext } from "react";
-import MultiChain from "./MultiChain";
+
 
 const Navbar = () => {
   const { connectModal, user, setAccount, setUser, setConnectModal, walletConnected, setWalletConnected } = useContext(NftContext);
@@ -44,20 +44,19 @@ const Navbar = () => {
             />
           </div>
 
-          <div className="hidden md:flex justify-between gap-6">
+          <div className="hidden text-white md:flex justify-between gap-6">
             <Link href="/">
-              <button variant="secondary">Home</button>
+              <button className="text-white" >Home</button>
             </Link>
             <Link href="/Explore">
-              <button variant="secondary">Explore</button>
+              <button className="text-white">Explore</button>
             </Link>
             <Link href="/AboutUs">
-              <button variant="secondary">About us</button>
+              <button className="text-white">About us</button>
             </Link>
             {/* <Link href="/Create">
               <button variant="secondary">Create</button>
             </Link> */}
-            <MultiChain />
           </div>
 
           {!walletConnected ? (
@@ -107,7 +106,6 @@ const Navbar = () => {
               <FaTimes className="text-2xl" />
             </Button>
             <div className="top-0 relative z-50">
-              <MultiChain />
             </div>
 
             {/* <div className="top-0 relative z-50">
