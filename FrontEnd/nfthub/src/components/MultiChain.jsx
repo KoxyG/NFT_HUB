@@ -8,7 +8,7 @@ const chains = [
   { name: 'Ethereum', img: "/Images/Ethereum.png", chainId: 1 },
   { name: 'Polygon', img: "/Images/Polygon.png", chainId: 137 },
   { name: 'Avalanche', img: "/Images/Avalanche.png", chainId: 43114 },
-  { name: 'Solana', img: "/Images/Solana.png", chainId: 101 },
+  { name: 'Solana', img: "/Images/solana.png", chainId: 101 },
   
 ]
 
