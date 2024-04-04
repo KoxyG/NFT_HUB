@@ -8,6 +8,7 @@ export function NftProvider(props) {
   const [db, setDb] = useState(null);
   const [user, setUser] = useState(null);
   const [connectModal, setConnectModal] = useState(false);
+  const [bidModal, setBidModal] = useState(false);
   const [walletConnected, setWalletConnected] = useState(false);
   const [initDb, setInitDb] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -22,8 +23,12 @@ export function NftProvider(props) {
     <div>
       <NftContext.Provider
         value={{
+          bidModal,
+          setBidModal,
           minting,
           setMinting,
+          signer,
+          setSigner,
           tokenID,
           connectModal,
           walletConnected,

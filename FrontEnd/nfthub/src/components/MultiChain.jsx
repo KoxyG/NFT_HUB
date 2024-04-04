@@ -4,15 +4,27 @@ import { FaCheck } from "react-icons/fa6";
 import { RiExpandUpDownLine } from "react-icons/ri";
 
 const chains = [
-  { name: 'Arbitrum', img: "/Images/Arbitrum.png" },
-  { name: 'Ethereum', img: "/Images/Ethereum.png" },
-  { name: 'Solana', img: "/Images/solana.png" },
-  { name: 'Avalanche', img: "/Images/Avalanche.png" },
-  { name: 'Polygon', img: "/Images/Polygon.png" },
+  { name: 'Arbitrum', img: "/Images/Arbitrum.png", chainId: 42161 },
+  { name: 'Ethereum', img: "/Images/Ethereum.png", chainId: 1 },
+  { name: 'Polygon', img: "/Images/Polygon.png", chainId: 137 },
+  { name: 'Avalanche', img: "/Images/Avalanche.png", chainId: 43114 },
+  { name: 'Solana', img: "/Images/Solana.png", chainId: 101 },
+  
 ]
 
 export default function MultiChain() {
   const [selected, setSelected] = useState(chains[0])
+
+  const switchChain = async (chainId) => {
+    try {
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: `0x${chainId.toString(16)}` }],
+      });
+    } catch (error) {
+      console.error('Error switching chain:', error);
+    }
+  };
 
   return (
     <div className="rounded-lg bg-gradient-to-r from-[#fe7d46] to-[#faad89] w-35">
@@ -46,6 +58,7 @@ export default function MultiChain() {
                     }`
                   }
                   value={chain}
+                  onClick={() => switchChain(chain.chainId)}
                 >
                   {({ selected }) => (
                     <>

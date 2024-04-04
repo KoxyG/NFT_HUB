@@ -11,9 +11,13 @@ import Card from "../Card";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import BidDetailsModal from "@/components/BidDetailsModal";
 
 
 const Details = () => {
+
+  const { bidModal, setBidModal } = useContext(NftContext);
+
 
   const router = useRouter()
   const { id } = router.query;
@@ -61,11 +65,11 @@ const selectedNFT = NFTDetails.find(nft => nft.id === parseInt(id));
 
 
   const openModal = () => {
-    setModal(true);
+    setBidModal(true);
   };
 
-  const closeAuction = () => {
-    setShowModal(fals);
+  const closeModal = () => {
+    setBidModal(false);
   };
 
   
@@ -103,6 +107,9 @@ const selectedNFT = NFTDetails.find(nft => nft.id === parseInt(id));
                 <button onClick={openModal} variant="primary" className="bg-[#ffa37d] font-bold py-5 rounded-md basis-full !flex justify-center">
                   Place bid
                 </button>
+                {bidModal && (
+              <BidDetailsModal isOpen={bidModal} onClose={closeModal} />
+            )}
 
                
 
