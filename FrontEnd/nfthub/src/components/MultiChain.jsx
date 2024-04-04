@@ -4,7 +4,7 @@ import { FaCheck } from "react-icons/fa6";
 import { RiExpandUpDownLine } from "react-icons/ri";
 
 const chains = [
-  { name: 'Arbitrum', img: "/Images/Arbitrum.png", chainId: 42161 },
+  { name: 'ARBSEPOLIA', img: "/Images/Arbitrum.png", chainId: 421614 },
   { name: 'Ethereum', img: "/Images/Ethereum.png", chainId: 1 },
   { name: 'Polygon', img: "/Images/Polygon.png", chainId: 137 },
   { name: 'Avalanche', img: "/Images/Avalanche.png", chainId: 43114 },
