@@ -104,9 +104,7 @@ const selectedNFT = NFTDetails.find(nft => nft.id === parseInt(id));
                   Place bid
                 </button>
 
-                <button onClick={closeAuction} variant="primary" className="!flex justify-center font-bold py-5 rounded-md border-2 border-[#ffa37d] basis-full">
-                Make an offer
-                </button>
+               
 
                 {/* <Modal>
                   {/* <h7 className="text-center !text-slate-900 font-normal leading-snug">

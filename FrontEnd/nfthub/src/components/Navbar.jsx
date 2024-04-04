@@ -6,6 +6,7 @@ import Button from "@/elements/button";
 import ConnectModal from "./connectModal";
 import { NftContext } from "@/Context";
 import { useContext } from "react";
+import MultiChain from "./MultiChain";
 
 const Navbar = () => {
   const { connectModal, user, setAccount, setUser, setConnectModal, walletConnected, setWalletConnected } = useContext(NftContext);
@@ -56,6 +57,7 @@ const Navbar = () => {
             {/* <Link href="/Create">
               <button variant="secondary">Create</button>
             </Link> */}
+            <MultiChain />
           </div>
 
           {!walletConnected ? (
@@ -104,6 +106,9 @@ const Navbar = () => {
             >
               <FaTimes className="text-2xl" />
             </Button>
+            <div className="top-0 relative z-50">
+              <MultiChain />
+            </div>
 
             {/* <div className="top-0 relative z-50">
               <Button
