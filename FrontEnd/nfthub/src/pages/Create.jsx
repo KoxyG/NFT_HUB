@@ -1,17 +1,18 @@
 import { useDropzone } from "react-dropzone";
 import { useContext, useEffect, useCallback, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
-import { NFTStorage, File } from 'nft.storage'
+import { NFTStorage, File } from "nft.storage";
 import { NftContext } from "@/Context";
-import { Contract } from "ethers";
-import { Marketplace_Address, marketplace } from "@/Abi/Marketplace";
-import { Nft_Address, Nft } from "@/Abi/Nft";
+import { Contract, provider } from "ethers";
+import WeaveDB from "weavedb-sdk";
 
+import { Nft_Address, Nft } from "@/Abi/Nft";
 
 import "react-toastify/dist/ReactToastify.css";
 
 import fileReaderStream from "filereader-stream";
 import { nanoid } from "nanoid";
+import { getMarketplaceContractInstance } from "@/Config";
 
 export default function Create(props) {
   const [title, setTitle] = useState("");
@@ -20,18 +21,23 @@ export default function Create(props) {
   const [fileUrl, setFileUrl] = useState("");
   const [ImgBase64, setImgBase64] = useState("");
   const [category, setCategory] = useState("");
-  const [setBundlrId] = useState("");
+  const [nftUrl, setNftUrl] = useState("");
   const [loading, setLoading] = useState("");
+  const [deadline, setDeadline] = useState("");
 
-  const { tokenID, setMinting, provider, account, minting } = useContext(NftContext);
+  const { setMinting, provider, account, minting } =
+    useContext(NftContext);
 
-  const NFT_STORAGE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweERENUI5NTU4RDhlNDI3Qzg2MTM2ZUFkNzA1NTljOEE3NTQzNmU5MDgiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTcxMjAwMjg4NjUwMywibmFtZSI6Ik5GVF9IVUIifQ.wiwWJIAoVM1mMzfo06Z7p1Ad2zM4hDlPNziwxAIK1r4'
-
+  const NFT_STORAGE_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweERENUI5NTU4RDhlNDI3Qzg2MTM2ZUFkNzA1NTljOEE3NTQzNmU5MDgiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTcxMjAwMjg4NjUwMywibmFtZSI6Ik5GVF9IVUIifQ.wiwWJIAoVM1mMzfo06Z7p1Ad2zM4hDlPNziwxAIK1r4";
 
   const contractTxId = "U2OR33r74nnR1C3alI-JEpbRqSisAiKIEbXECgaJSyA";
   // const db = new SDK({ contractTxId: contractTxId });
 
-
+  const {
+    db,
+    setDb
+  } = useContext(NftContext);
 
   const { getRootProps, getInputProps, open, acceptedFiles } = useDropzone({
     noClick: true,
@@ -77,6 +83,12 @@ export default function Create(props) {
     }
   };
 
+  const dateToEpoch = (dateString) => {
+    const myDate = new Date(dateString);
+    const epochTime = myDate.getTime() / 1000.0;
+    return epochTime;
+  };
+
   //files to select
 
   const Files = acceptedFiles.map((file) => (
@@ -88,10 +100,10 @@ export default function Create(props) {
   // //handle changes or category
 
   const handleCategoryChange = (event) => {
+    console.log("category", event.target.value);
     setCategory(event.target.value);
   };
 
-  //handle change for the rest inputs
 
   //handle submit
   const resetForm = () => {
@@ -111,53 +123,88 @@ export default function Create(props) {
   }, []);
 
   const handlrNftStorageUpload = async (title, description, fileUrl) => {
-    
-    console.log("fileUrl: ", fileUrl)
+    console.log("fileUrl: ", fileUrl);
     try {
       const client = new NFTStorage({ token: NFT_STORAGE_KEY });
       const metadata = await client.store({
         name: title,
         description: description,
-        image: fileUrl
-      })
-      console.log("metadata: ", metadata)
+        image: fileUrl,
+      });
+      const metadata_url = metadata.url;
+      console.log("metadata_url: ", metadata_url);
       const cid = metadata.ipnft;
-      console.log("cid: ", cid)
+      console.log("cid: ", cid);
+
+      // Call handleMintNft here
+      await handleMintNft(metadata_url);
     } catch (error) {
       console.log("Error uploading file: ", error);
     }
   };
 
-  const handleMintNft = async (e) => {
-    // e.preventDefault();
+  const handleMintNft = async (metadata_url) => {
     setMinting(true);
     try {
       
+        const signer = provider.getSigner();
+        const account = await signer.getAddress();
+        const nftContract = getNftContractInstance(signer);
+        console.log("nftContract: ", nftContract);
+        
+        console.log("nftUrl metadata: ", metadata_url);
+
+
+        // Create a promise to wait for Transfer event
+        const transferEventPromise = new Promise((resolve, reject) => {
+            nftContract.on("Transfer", (from, to, tokenId, event) => {
+                resolve({ tokenId, to });
+            });
+        });
+
+        // Mint the NFT
+        const nft = await nftContract.mintNFT(metadata_url);
+        await nft.wait();
+        console.log("NFT minted successfully");
+
+        // Wait for the Transfer event and retrieve tokenID and To
+        const { tokenId, to } = await transferEventPromise;
+        const tokenID = tokenId.toString();
+        console.log("tokenID", tokenID);
+        console.log("to", to);
+
+        // Pass additional parameters to handleMarketplace
+        await handleMarketplace(to, tokenID, price, deadline);
+
+        setMinting(false);
+        toast.success("NFT successfully minted!");
+    } catch (error) {
+        console.log(error);
+        toast.error("An error occurred while minting the NFT");
+    }
+};
+
+  const handleMarketplace = async (to, tokenID) => {
+    try {
       const signer = provider.getSigner();
-      const account = signer.getAddress()
-      console.log("account", account);
-      console.log("signer: ", signer)
-      const nftContract = getNftContractInstance(signer);
-      console.log("nftContract: ", nftContract)
-      // const tokenId = nanoid();
-      // console.log("tokenId: ", tokenId);
-      const nft = await nftContract.mint(
-        "0x4d262f40a01391eFcb4847A07Ad21f51f03264C3",
-        "1",
-      );
-      await nft.wait();
-      setMinting(false);
-      toast.success("Nft successfully minted!");
+      const marketplaceContract = await getMarketplaceContractInstance(signer);
+      console.log("marketplaceContract: ", marketplaceContract);
+      
+      const epochTime = dateToEpoch(deadline);
+      
+      const marketplace = await marketplaceContract.createListing(to, tokenID, price, epochTime);
+      marketplace.wait();
+      console.log("marketplace created", marketplace);
     } catch (error) {
       console.log(error);
-      toast.error("An error occurred while minting the Nft");
+      toast.error("An error occurred while creaating marketplace");
     }
   }
 
-  
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     if (
       !title ||
       // !price ||
@@ -178,17 +225,14 @@ export default function Create(props) {
       // setLoading({ show: true, msg: "Nft..." });
 
       try {
-      
         setLoading(true);
-        
-        
-        await handlrNftStorageUpload(title, description, fileUrl)
-        await handleMintNft().
+
+        await handlrNftStorageUpload(title, description, fileUrl);
+       
         setLoading(false);
         resetForm();
 
         toast.success("Nft successfully minted!");
-        
       } catch (error) {
         console.log(error);
         toast.error("An error occurred while minting the Nft");
@@ -196,17 +240,9 @@ export default function Create(props) {
     }
   };
 
-
-
-  
-
-  
-
   return (
     <div>
-      <div
-        className="bg-black"
-      >
+      <div className="bg-black">
         <div className="justify-center align-center">
           {/* headers */}
           <div className="pb-3">
@@ -304,7 +340,6 @@ export default function Create(props) {
                 />
               </div>
 
-              
               {/* picture / add nft input */}
               <div
                 {...getRootProps({ className: "dropzone" })}
@@ -363,6 +398,21 @@ export default function Create(props) {
                 <ul>{Files}</ul>
               </aside>
 
+                {/* Deadline */}
+              <div className="pt-6 flex flex-col pb-[32px]">
+                    <label className="pb-[7px] text-white text-sm sm:text-base font-semibold leading-snug">
+                      Deadline
+                    </label>
+                    <input
+                      required
+                      name="deadline"
+                      type="datetime-local"
+                      value={deadline}
+                      onChange={handleChange}
+                      className="border rounded-lg w-[400px] sm:w-[600px] py-3 px-3 text-gray-700 leading-tight "
+                    />
+                  </div>
+
               {/* category input */}
               <div className="pt-6 pb-[50px] flex flex-col appearance-none">
                 <label
@@ -388,8 +438,8 @@ export default function Create(props) {
                   <option value="edit this later">
                     Select the category of your project
                   </option>
-                  <option value="edit this later">picture Nft</option>
-                  <option value="edit this later">Fractional ownership</option>
+                  <option value="edit this later">Art</option>
+                  <option value="edit this later">Fashion</option>
                 </select>
               </div>
 

@@ -9,7 +9,7 @@ import Image from "next/image";
 export default function ConnectModal({ isOpen, onClose }) {
   const CHAIN_ID = 421614;
   const NETWORK_NAME = "ARBSEPOLIA";
-  const contractTxId = "Sl1ParTvpAcwEk2nEfjudCk7QnJE1M7_3B_eMMnDwYI";
+  const contractTxId = "T74dWZiWvFwXBQ7ZLfosQiwKk_vyIXmU9vI6tSGEzkE";
 
 
   // router
@@ -40,7 +40,7 @@ export default function ConnectModal({ isOpen, onClose }) {
   const setupWeaveDB = async () => {
     try {
       const _db = new WeaveDB({
-        contractTxId: contractTxId,
+        contractTxId: contractTxId, type: 2,
       });
       const __db = await _db.init();
       console.log("__db", __db);
@@ -62,16 +62,19 @@ export default function ConnectModal({ isOpen, onClose }) {
           return;
         }
 
+
         const provider = new ethers.providers.Web3Provider(
           window.ethereum,
           "any"
         );
-        await provider.send("eth_requestAccounts", []);
+        await provider.send("eth_requestAccounts");
         const { chainId } = await provider.getNetwork();
 
         if (chainId !== CHAIN_ID) {
-          alert(`Please switch to the ${NETWORK_NAME} network!`);
-          throw new Error(`Please switch to the ${NETWORK_NAME} network`);
+          await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: `0x${CHAIN_ID.toString(16)}` }],
+                  });
         }
         setProvider(provider);
        
@@ -79,7 +82,7 @@ export default function ConnectModal({ isOpen, onClose }) {
         // const account = await signer.getAddress();
         // setAccount(account);
         // console.log("Signer address:", account);
-        console.log("db", db);
+        // console.log("db", db);
         const { identity } = await db.createTempAddress();
 
         setUser({

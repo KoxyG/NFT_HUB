@@ -5,19 +5,18 @@ import { Contract} from "ethers";
 
 
 
-export const getNftContractInstance = async (signer) => {
+export const getNftContractInstance = async(provider) => {
   try {
-    return new Contract(Nft_Address, Nft, signer);
+    return new Contract(Nft_Address, Nft, provider);
   } catch (error) {
-    console.error("Error creating NftContract instance:", error);
+    console.error("Error creating vesting contract instance:", error);
   }
 };
 
-export const getMarketplaceContractInstance = async(signer) => {
+export const getMarketplaceContractInstance = async(provider) => {
   try {
     return new Contract(Marketplace_Address, marketplace, provider);
   } catch (error) {
-    console.error("Error creating token contract instance:", error);
-    return null;
+    console.error("Error creating marketplace contract instance:", error);
   }
 };
