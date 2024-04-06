@@ -83,11 +83,11 @@ export default function ConnectModal({ isOpen, onClose }) {
         // setAccount(account);
         // console.log("Signer address:", account);
         // console.log("db", db);
-        const { identity } = await db.createTempAddress();
+        // const { identity } = await db.createTempAddress();
 
-        setUser({
-          privateKey: identity.privateKey,
-        });
+        // setUser({
+        //   privateKey: identity.privateKey,
+        // });
 
         setWalletConnected(true);
         onClose(false);
